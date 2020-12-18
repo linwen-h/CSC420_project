@@ -1,3 +1,6 @@
+import numpy as np
+import shutil
+from shutil import copyfile
 import os
 import argparse
 import logging
@@ -45,6 +48,36 @@ def main(args):
                 img.save(output_path / input_file_path.name)
             except:
                 logging.exception(f"Failed to down-sample: {input_file_path}")
+
+        # Split Dataset into Train, Validation, and Test sets
+        train_path, train_path_out = input_path / "train", output_path / "train"
+        val_path, val_path_out = input_path / "val", output_path / "val"
+        test_path, test_path_out = input_path / "test", output_path / "test"
+        for fp in [train_path, train_path_out, val_path, val_path_out, test_path, test_path_out]:
+            if fp.exists():
+                shutil.rmtree(fp)
+            fp.mkdir(parents=True, exist_ok=True)
+
+        train_fp, val_fp, test_fp = [], [], []
+        for fp in os.listdir(input_path):
+            if os.path.isfile(input_path / fp) and os.path.splitext(fp)[1] == ".png":
+                val = np.random.random()
+                if val < 0.20:
+                    test_fp.append(fp)
+                elif val < 0.40:
+                    val_fp.append(fp)
+                else:
+                    train_fp.append(fp)
+
+        for folder, fps in [(train_path_out, train_fp), (val_path_out, val_fp), (test_path_out, test_fp)]:
+            for fp in fps:
+                # print(output_path / fp, folder / fp)
+                copyfile(output_path / fp, folder / fp)
+
+        for folder, fps in [(train_path, train_fp), (val_path, val_fp), (test_path, test_fp)]:
+            for fp in fps:
+                copyfile(input_path / fp, folder / fp)
+
     else:
         return -1
     return 0
