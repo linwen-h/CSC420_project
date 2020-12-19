@@ -15,7 +15,6 @@ SUB_PROCEDURES = {
     'infer': infer.main
 }
 
-
 def main(args):
     """
     Main script entry-point.

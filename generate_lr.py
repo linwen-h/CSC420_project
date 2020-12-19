@@ -71,7 +71,6 @@ def main(args):
 
         for folder, fps in [(train_path_out, train_fp), (val_path_out, val_fp), (test_path_out, test_fp)]:
             for fp in fps:
-                # print(output_path / fp, folder / fp)
                 copyfile(output_path / fp, folder / fp)
 
         for folder, fps in [(train_path, train_fp), (val_path, val_fp), (test_path, test_fp)]:
@@ -84,9 +83,9 @@ def main(args):
 
 
 def init_args(parser):
-    parser.add_argument('--input_path', type=arg_util.path_abs, required=True, help="TODO")
-    parser.add_argument('--output_path', type=arg_util.path_abs, required=True, help="TODO")
-    parser.add_argument('--force', action='store_true', default=False, help="TODO")
+    parser.add_argument('--input_path', type=arg_util.path_abs, required=True, help="Path to inputs")
+    parser.add_argument('--output_path', type=arg_util.path_abs, required=True, help="Path to write outputs")
+    parser.add_argument('--force', action='store_true', default=False, help="Rewrite inputs")
     parser.add_argument('--scale', type=int, default=4)
     return parser
 

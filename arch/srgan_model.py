@@ -29,19 +29,27 @@ class Generator(nn.Module):
 
 
 class Discriminator(nn.Module):
-    def __init__(self, img_feat=3, n_feats=64, kernel_size=3, act=nn.LeakyReLU(inplace=True), num_of_block=3,
-                 patch_size=96):
+    def __init__(self, img_feat=3, n_feats=64, kernel_size=3, act=nn.LeakyReLU(inplace=True), num_of_block=3, patch_size=96):
         super(Discriminator, self).__init__()
         self.act = act
-        self.conv01 = conv(in_channel=img_feat, out_channel=n_feats, kernel_size=3, BN=False, act=self.act)
-        self.conv02 = conv(in_channel=n_feats, out_channel=n_feats, kernel_size=3, BN=False, act=self.act, stride=2)
 
-        body = [discrim_block(in_feats=n_feats * (2 ** i), out_feats=n_feats * (2 ** (i + 1)), kernel_size=3, act=self.act) for i in range(num_of_block)]
+        self.conv01 = conv(in_channel=img_feat, out_channel=n_feats,
+                           kernel_size=3, BN=False, act=self.act)
+        self.conv02 = conv(in_channel=n_feats, out_channel=n_feats,
+                           kernel_size=3, BN=False, act=self.act, stride=2)
+
+        body = [discrim_block(in_feats=n_feats * (2 ** i), out_feats=n_feats * (
+            2 ** (i + 1)), kernel_size=3, act=self.act) for i in range(num_of_block)]
         self.body = nn.Sequential(*body)
 
-        self.linear_size = ((patch_size // (2 ** (num_of_block + 1))) ** 2) * (n_feats * (2 ** num_of_block))
+        tail = []
+        self.linear_size = ((patch_size // (2 ** (num_of_block + 1)))
+                            ** 2) * (n_feats * (2 ** num_of_block))
+        tail.append(nn.Linear(self.linear_size, 1024))
+        tail.append(self.act)
+        tail.append(nn.Linear(1024, 1))
+        # tail.append(nn.Sigmoid())
 
-        tail = [nn.Linear(self.linear_size, 1024), self.act, nn.Linear(1024, 1), nn.Sigmoid()]
         self.tail = nn.Sequential(*tail)
 
     def forward(self, x):

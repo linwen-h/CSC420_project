@@ -1,7 +1,9 @@
+# Implementation of Neural Network Blocks from Donghee Son
+# https://github.com/dongheehand/SRGAN-PyTorch/blob/master/ops.py
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 
 class _conv(nn.Conv2d):
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding, bias):
