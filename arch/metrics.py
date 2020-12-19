@@ -227,7 +227,7 @@ class MetricEval(object):
                 img_lr = (img_lr.squeeze() * 255.).permute((1, 2, 0)
                                                            ).to(torch.uint8).cpu().numpy()
 
-                f, ax = plt.subplots(1, 4, figsize=(10., 10.))
+                f, ax = plt.subplots(1, 4, figsize=(10., 3.5))
                 ax[0].imshow(img_gt)
                 ax[0].title.set_text(f"Ground Truth\n")
                 ax[0].axis('off')
@@ -240,7 +240,7 @@ class MetricEval(object):
                     f"Prediction (No finetuning)\n({np.round(psnr2.item(), 2)}dB/{np.round(g_loss2.item(), 4)})")
                 ax[2].axis('off')
                 ax[3].imshow(img_lr)
-                ax[3].title.set_text(f"Input")
+                ax[3].title.set_text(f"Input\n")
                 ax[3].axis('off')
 
                 plt.subplots_adjust(wspace=0, hspace=0,
